@@ -1,0 +1,8 @@
+FROM node
+WORKDIR /app
+COPY package*.json .
+COPY serve.js ./serve.js
+
+RUN npm install
+
+CMD ["node", "server.js"]
