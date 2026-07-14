@@ -1,0 +1,12 @@
+services:
+  frontend:
+    build: ./client
+    ports:
+      - "3000:3000"
+    
+  backend:
+    build: ./server
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
