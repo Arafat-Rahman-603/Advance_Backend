@@ -5,6 +5,7 @@ import Redis from "ioredis"
 import User from "./model/user.model.js"
 import connnectDB from "./lib/db.js";
 import dns from "dns";
+import ratelimitMiddleware from "./midddelware/ratelimite.middelwar.js"
 dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 
@@ -71,6 +72,17 @@ app.get("/verify/:id", async (req, res) => {
         console.error(error)
     }
 })
+
+app.get("/generate", ratelimitMiddleware, (req, res) => {
+    const { prompt } = req.body;
+    console.log(prompt)
+
+    const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}`;
+
+    res.json({
+        image: url,
+    });
+});
 
 app.post("/verify", async (req, res) => {
     try {
