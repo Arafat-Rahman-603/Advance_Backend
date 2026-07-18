@@ -55,6 +55,40 @@ app.get("/users/:id", async (req, res) => {
     }
 })
 
+app.get("/verify/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const otp = Math.floor(100000 + Math.random() * 900000);
+        const userRedis = await redis.get("otp" + id);
+        if (userRedis) {
+            res.json({ message: "Otp already sent", otp })
+        } else {
+            await redis.set("otp" + id, otp, 'EX', 120);
+
+            res.json({ otp })
+        }
+    } catch (error) {
+        console.error(error)
+    }
+})
+
+app.post("/verify", async (req, res) => {
+    try {
+        const { id, otp } = req.body;
+        const userRedis = await redis.get("otp" + id);
+
+        if (userRedis == otp) {
+            await User.findByIdAndUpdate(id, { verify: true })
+            await redis.del("otp" + id);
+            res.json({ message: "Otp verified successfully" })
+        } else {
+            res.json({ message: "Invalid Otp" })
+        }
+    } catch (error) {
+        console.error("error", error)
+    }
+})
+
 app.listen(process.env.PORT, () => {
     console.log("Server started on port", process.env.PORT)
 })
