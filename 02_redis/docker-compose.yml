@@ -1,0 +1,11 @@
+services:
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+  backend:
+    build: ./basic
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./basic/.env
