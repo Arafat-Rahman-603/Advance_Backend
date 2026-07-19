@@ -5,8 +5,8 @@ import Redis from "ioredis"
 import User from "./model/user.model.js"
 import connnectDB from "./lib/db.js";
 import dns from "dns";
+import {emailQueue} from "./email-queue/queue.js"
 import ratelimitMiddleware from "./midddelware/ratelimite.middelwar.js"
-dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 
 dotenv.config()
@@ -25,6 +25,10 @@ app.get("/", (req, res) => {
 app.post("/users", async (req, res) => {
     try {
         const { name, email, pass } = req.body;
+
+        emailQueue.add("email-job", {
+            email
+        });
 
         const user = new User({ name, email, pass });
 
