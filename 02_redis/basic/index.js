@@ -6,6 +6,7 @@ import User from "./model/user.model.js"
 import connnectDB from "./lib/db.js";
 import dns from "dns";
 import {emailQueue} from "./email-queue/queue.js"
+import "./email-queue/worker.js"
 import ratelimitMiddleware from "./midddelware/ratelimite.middelwar.js"
 
 
